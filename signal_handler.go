@@ -45,7 +45,6 @@ func (sh *SignalHandler) watch() {
 	sh.logger.LogNotice(structure, function, "stopped", -1)
 	sh.wg.Done()
 }
-
 func (sh *SignalHandler) RegisterCallback(f func(os.Signal, Logger)) error {
 	if sh.running {
 		return ErrAlreadyStarted
@@ -55,7 +54,6 @@ func (sh *SignalHandler) RegisterCallback(f func(os.Signal, Logger)) error {
 		return nil
 	}
 }
-
 func (sh *SignalHandler) StartOn(signals []os.Signal) error {
 	if sh.running {
 		return ErrAlreadyStarted
@@ -74,7 +72,6 @@ func (sh *SignalHandler) StartOn(signals []os.Signal) error {
 		return nil
 	}
 }
-
 func (sh *SignalHandler) Stop() error {
 	if !sh.running {
 		return ErrNotRunning
@@ -85,12 +82,14 @@ func (sh *SignalHandler) Stop() error {
 		return nil
 	}
 }
-
 func (sh *SignalHandler) Wait() {
 	sh.wg.Wait()
 }
 
 func NewSignalHandler(logger Logger) *SignalHandler {
+	if logger == nil {
+		logger = new(dummyLogger)
+	}
 	return &SignalHandler{
 		signalChan:    make(chan os.Signal, 1),
 		callbackFuncs: make([]func(os.Signal, Logger), 0),
